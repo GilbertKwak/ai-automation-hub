@@ -9,12 +9,42 @@ This project adheres to [Semantic Versioning](https://semver.org/) and [Keep a C
 ## [Unreleased]
 
 ### Planned
+- `prompts/consulting/variants/` — 도메인 특화 변형체 3종 (C-BCG-HBM / C-MCK-AI_INFRA / C-ADV-BSTAR)
 - `prompts/analysis/` — process decomposition prompt templates
 - `prompts/generation/` — report & document generation prompts
 - `architectures/n8n/` — workflow diagrams for HBM data pipeline
 - `scripts/validators/` — LLM output validation framework
 - `docs/kpi-framework.md` — full KPI measurement methodology
 - `docs/pilot-guide.md` — MVP deployment step-by-step guide
+
+---
+
+## [0.2.0] — 2026-04-28 [Phase G]
+
+### Added — Consulting Prompt Library (PE-CON)
+- `prompts/consulting/C-BCG-MASTER_v1.0.md` — BCG Matrix·Experience Curve·GenAI 통합 마스터
+  - ID: C-006 | Level Selector: JUNIOR / EXECUTIVE / BOARD
+  - Consulting_002.txt의 Basic·Advanced·Executive 3개 프롬프트를 1개로 통합
+  - PE-3 종합 점수: 80 → 93 (+13)
+- `prompts/consulting/C-MCK-MASTER_v1.0.md` — McKinsey 문제해결 통합 마스터
+  - ID: C-007 | Level Selector: SENIOR / PARTNER / DIRECTOR
+  - Consulting_002.txt의 Senior·Partner·Director·Global Director 4개 프롬프트를 1개로 통합
+  - PE-3 종합 점수: 80 → 95 (+15)
+- `prompts/consulting/C-ADV-MASTER_v1.0.md` — 전략 자문 페르소나 통합 마스터
+  - ID: C-008 | Persona Selector: MBA_PROF / ADVISOR / CEO_ADVISOR / BOARD
+  - Consulting_003-2.txt의 4개 페르소나 프롬프트를 1개로 통합
+  - PE-3 종합 점수: 89 → 96 (+7)
+
+### PE-3 Summary
+| 프롬프트 | Before | After | Delta |
+|---------|--------|-------|-------|
+| C-BCG-MASTER | 80 | 93 | +13 |
+| C-MCK-MASTER | 80 | 95 | +15 |
+| C-ADV-MASTER | 89 | 96 | +7 |
+
+### Source Files
+- `Consulting_002.txt` — BCG + McKinsey 원본 (7개 프롬프트 → 2개 마스터)
+- `Consulting_003-2.txt` — Strategic Advisory 원본 (4개 프롬프트 → 1개 마스터)
 
 ---
 

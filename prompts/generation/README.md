@@ -1,7 +1,7 @@
 # PE-GEN — Report Auto-Generation Prompt Library Index
 
 > **Category**: Prompt Engineering / Generation (PE-GEN)  
-> **Version**: 1.0.0 | **Last Updated**: 2026-04-28 | **Phase**: I  
+> **Version**: 1.1.0 | **Last Updated**: 2026-04-28 | **Phase**: I  
 > **Maintainer**: Gilbert Kwak | **Repo**: `GilbertKwak/ai-automation-hub`  
 > **Parent System**: 🤖 PE-7 AI 자동화 설계 및 구현 v2.0
 
@@ -10,8 +10,8 @@
 ## 개요 / Overview
 
 PE-GEN은 Gilbert의 핵심 도메인(HBM Salvage · AI 인프라 · B-Star sCO2)에 특화된  
-**보고서 자동생성 · Executive Summary · 슬라이드 스크립트 · SSOT 동기화 리포트**  
-4종 프롬프트 라이브러리입니다.
+**보고서 자동생성 · Executive Summary · 슬라이드 스크립트 · SSOT 동기화 · 주간 업무 요약**  
+5종 프롬프트 라이브러리입니다.
 
 > **PE-7 v2.0 완전 통합**: 세션 자동 실행 프로토콜 + E-0N 오류 예측 시스템 + 3-Engine(PE-1/PE-2/PE-3) 연계
 
@@ -25,7 +25,8 @@ prompts/generation/
 ├── G-REPORT_v1.0.md             (G-001) FU-Series 기술 보고서 자동생성
 ├── G-EXEC_v1.0.md               (G-002) Executive Summary 자동생성
 ├── G-SLIDE_v1.0.md              (G-003) 슬라이드 스크립트 자동생성
-└── G-SYNC_v1.0.md               (G-004) Notion-GitHub SSOT 동기화 리포트
+├── G-SYNC_v1.0.md               (G-004) Notion-GitHub SSOT 동기화 리포트
+└── G-WEEKLY_v1.0.md             (G-005) 주간 업무 요약 자동생성
 ```
 
 ---
@@ -38,6 +39,7 @@ prompts/generation/
 | **G-002** | [G-EXEC_v1.0.md](./G-EXEC_v1.0.md) | Executive Summary (1p) | Pyramid Principle + CTA 필수 | **95** | 투자자 브리핑, 이사회 보고, 파트너 제안 |
 | **G-003** | [G-SLIDE_v1.0.md](./G-SLIDE_v1.0.md) | 슬라이드 스크립트 | 10-Slide Standard + Action Title | **94** | Pitch Deck, 이사회 업데이트, 컨퍼런스 발표 |
 | **G-004** | [G-SYNC_v1.0.md](./G-SYNC_v1.0.md) | SSOT 동기화 리포트 | PE-7 5단계 파이프라인 + E-0N 전체 | **95** | 주간 동기화 감사, E-0N 자동 수정 리포트 |
+| **G-005** | [G-WEEKLY_v1.0.md](./G-WEEKLY_v1.0.md) | 주간 업무 요약 리포트 | KPI 대시보드 + 블로커 감지 + 차주 계획 | **95** | 주간 정례 보고, 이사회 월간 검토, 슬랙 공유 |
 
 ---
 
@@ -53,6 +55,9 @@ prompts/generation/
 | 이사회 전략 보고 슬라이드 | **G-003** | `G-SLIDE [AUDIENCE: BOARD] [DOMAIN: HBM_SALVAGE] [SLIDES: 8]` |
 | Notion-GitHub 동기화 점검 | **G-004** | `G-SYNC [SCAN_SCOPE: ALL] [AUTO_FIX: ON] [REPORT_FORMAT: STANDARD]` |
 | 빠른 SHA 불일치 체크 | **G-004** | `G-SYNC [SCAN_SCOPE: SHA_ONLY] [REPORT_FORMAT: BRIEF]` |
+| 이번 주 업무 요약 생성 | **G-005** | `G-WEEKLY [WEEK: 2026-W18] [DOMAIN: HBM_SALVAGE] [DEPTH: STANDARD]` |
+| 전체 도메인 주간 요약 | **G-005** | `G-WEEKLY [WEEK: 2026-W18] [DOMAIN: ALL] [DEPTH: DEEP]` |
+| 슬랙 공유용 빠른 요약 | **G-005** | `G-WEEKLY [WEEK: 2026-W18] [DOMAIN: BSTAR_STRATEGY] [DEPTH: BRIEF]` |
 | HBM 기술 이사회 보고 패키지 | **G-001 + G-002** | G-001 생성 → G-002 [SOURCE: G-001 결과물] 순서 실행 |
 
 ---
@@ -62,7 +67,12 @@ prompts/generation/
 ```
 [PE-7 v2.0 세션 시작]
       │
-      ├─ [PRE] SSOT 스캔 → E-0N 자동 분류 (G-004 연동)
+      ├─ [PRE] G-004(G-SYNC) → SSOT 스캔 + E-0N 자동 분류
+      │
+      ├─ [MON] G-005(G-WEEKLY) → 주간 업무 요약 자동 생성
+      │   ├─ KPI 달성률 대시보드
+      │   ├─ 블로커 감지 + 대안 제안
+      │   └─ 차주 실행 계획 우선순위 정렬
       │
       ├─ [EXEC-A] 보고서 생성 파이프라인
       │   G-001 (기술 보고서) → G-002 (Executive Summary) → G-003 (Pitch Deck)
@@ -86,6 +96,8 @@ prompts/generation/
 | B-Star sCO2 Series A | A-TECH + A-MARKET | C-ADV-BSTAR | G-002 + G-003 |
 | AI 인프라 파트너 제안 | A-DECOMP + A-TECH | C-MCK-AI_INFRA | G-003 + G-002 |
 | 주간 SSOT 감사 | — | — | G-004 |
+| 주간 업무 요약 | — | — | **G-005** |
+| 월간 이사회 패키지 | A-MARKET + A-RISK | C-BCG | G-005(DEEP) + G-002 + G-003 |
 
 ---
 
@@ -97,7 +109,8 @@ prompts/generation/
 | G-002 (EXEC) | 96 | 95 | 94 | 96 | 96 | **95** |
 | G-003 (SLIDE) | 95 | 95 | 93 | 94 | 94 | **94** |
 | G-004 (SYNC) | 96 | 96 | 95 | 95 | 95 | **95** |
-| **평균** | **96.0** | **95.8** | **94.3** | **95.3** | **95.5** | **95.0** |
+| G-005 (WEEKLY) | 96 | 96 | 94 | 95 | 96 | **95** |
+| **평균** | **96.0** | **95.8** | **94.2** | **95.2** | **95.6** | **95.0** |
 
 ---
 
@@ -108,11 +121,11 @@ G-[FUNCTION]_v[MAJOR].[MINOR].md
 
 예시:
 G-REPORT_v1.0.md    → FU-Series 보고서 자동생성 v1.0
-G-EXEC_v1.1.md      → Executive Summary v1.1 (업데이트)
+G-WEEKLY_v1.0.md    → 주간 업무 요약 자동생성 v1.0
 
 ID 체계:
-G-001 ~ G-004  = PE-GEN 핵심 4종
-G-005+         = 향후 추가 생성 템플릿
+G-001 ~ G-005  = PE-GEN 핵심 5종
+G-006+         = 향후 추가 생성 템플릿
 ```
 
 ---
@@ -131,14 +144,15 @@ G-005+         = 향후 추가 생성 템플릿
 
 | 버전 | 날짜 | 내용 |
 |------|------|------|
+| **v1.1.0** | 2026-04-28 | G-005 (G-WEEKLY) 추가 — 주간 업무 요약 자동생성 |
 | **v1.0.0** | 2026-04-28 | PE-GEN 초기 릴리즈 — G-001 · G-002 · G-003 · G-004 |
 
 ---
 
 ## 🚀 Next Steps (Planned)
 
-- [ ] `G-WEEKLY_v1.0.md` (G-005) — 주간 업무 요약 자동생성
 - [ ] `G-KG_v1.0.md` (G-006) — Knowledge Graph 자동생성 (build_kg 연동)
 - [ ] `G-PR_v1.0.md` (G-007) — GitHub Pull Request 본문 자동생성
+- [ ] G-005 GitHub Actions 스케줄 등록 (매주 월요일 08:00 KST)
 - [ ] PE-GEN × GitHub Actions 완전 자동화 파이프라인
 - [ ] G-SYNC 일일 자동 실행 스케줄 등록

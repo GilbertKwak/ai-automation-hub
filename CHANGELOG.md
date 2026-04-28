@@ -9,13 +9,40 @@ This project adheres to [Semantic Versioning](https://semver.org/) and [Keep a C
 ## [Unreleased]
 
 ### Planned
-- `prompts/consulting/variants/` — 도메인 특화 변형체 3종 (C-BCG-HBM / C-MCK-AI_INFRA / C-ADV-BSTAR)
+- `prompts/consulting/README.md` — PE-CON 마스터 인덱스 (C-006~C-008-BS 등록)
 - `prompts/analysis/` — process decomposition prompt templates
 - `prompts/generation/` — report & document generation prompts
 - `architectures/n8n/` — workflow diagrams for HBM data pipeline
 - `scripts/validators/` — LLM output validation framework
 - `docs/kpi-framework.md` — full KPI measurement methodology
 - `docs/pilot-guide.md` — MVP deployment step-by-step guide
+
+---
+
+## [0.2.1] — 2026-04-28 [Phase G-2]
+
+### Added — Consulting Domain Variants (PE-CON)
+- `prompts/consulting/variants/C-BCG-HBM_v1.0.md` — BCG Matrix × HBM 반도체 재활용 시장 특화
+  - ID: C-006-HBM | Parent: C-006 (C-BCG-MASTER)
+  - 4개 포지션 직접 매핑: Star(HBM4 리폼) / Cash Cow(HBM2E) / QM(sCO2+HBM 패키지) / Dog(LPDDR5)
+  - PE-3 종합 점수: 95
+- `prompts/consulting/variants/C-MCK-AI_INFRA_v1.0.md` — McKinsey Partner × AI 데이터센터 열관리 특화
+  - ID: C-007-AI | Parent: C-007 (C-MCK-MASTER)
+  - Decision Question: 2026년 말 sCO2 vs 액침냉각 vs 하이브리드 포지셔닝
+  - Value Leakage Tree 3축 + SGI + Strategic Moves 표 포함
+  - PE-3 종합 점수: 96
+- `prompts/consulting/variants/C-ADV-BSTAR_v1.0.md` — CEO Advisor × B-Star sCO2 상업화 특화
+  - ID: C-008-BS | Parent: C-008 (C-ADV-MASTER)
+  - 4개 상황별 Response Protocol + 3개 B-Star 특화 프레임워크
+  - Mandatory Diagnostic Questions 3개 내장
+  - PE-3 종합 점수: 97
+
+### PE-3 Domain Variants Summary
+| 프롬프트 | 도메인 | PE-3 점수 |
+|---------|--------|----------|
+| C-BCG-HBM | HBM 반도체 재활용 | 95 |
+| C-MCK-AI_INFRA | AI 데이터센터 열관리 | 96 |
+| C-ADV-BSTAR | B-Star sCO2 상업화 | 97 |
 
 ---
 

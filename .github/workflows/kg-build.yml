@@ -1,0 +1,90 @@
+# G-006 Knowledge Graph Build Pipeline
+# 트리거: 매주 수요일 09:00 KST (00:00 UTC) + workflow_dispatch
+name: KG Build — HBM Salvage
+
+on:
+  schedule:
+    - cron: '0 0 * * 3'   # 매주 수요일 09:00 KST
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'KG 도메인 (예: HBM_SALVAGE, NOR_FLASH)'
+        required: true
+        default: 'HBM_SALVAGE'
+      version_tag:
+        description: '버전 태그 (예: 2026-W18)'
+        required: true
+        default: '2026-W18'
+      max_nodes:
+        description: '최대 노드 수'
+        required: false
+        default: '150'
+      max_edges:
+        description: '최대 엣지 수'
+        required: false
+        default: '300'
+
+jobs:
+  build-kg:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt 2>/dev/null || \
+          pip install openai notion-client neo4j networkx matplotlib
+
+      - name: Run KG Build (G-006)
+        env:
+          OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}
+          NOTION_TOKEN:    ${{ secrets.NOTION_TOKEN }}
+          NEO4J_URI:       ${{ secrets.NEO4J_URI }}
+          NEO4J_PASSWORD:  ${{ secrets.NEO4J_PASSWORD }}
+          DOMAIN:          ${{ github.event.inputs.domain || 'HBM_SALVAGE' }}
+          VERSION_TAG:     ${{ github.event.inputs.version_tag || '2026-W18' }}
+          MAX_NODES:       ${{ github.event.inputs.max_nodes || '150' }}
+          MAX_EDGES:       ${{ github.event.inputs.max_edges || '300' }}
+        run: |
+          python scripts/build_kg.py \
+            --domain "$DOMAIN" \
+            --version-tag "$VERSION_TAG" \
+            --max-nodes "$MAX_NODES" \
+            --max-edges "$MAX_EDGES" \
+            --output-dir kg/$DOMAIN/ \
+            --formats mermaid,json-ld,cypher \
+            --notion-upload true \
+            --orphan-check true
+
+      - name: Validate KG output
+        run: |
+          python scripts/validate_kg.py \
+            --input kg/${{ github.event.inputs.domain || 'HBM_SALVAGE' }}/${{ github.event.inputs.version_tag || '2026-W18' }}.md
+
+      - name: Commit KG artifacts
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add kg/
+          git diff --staged --quiet || \
+          git commit -m "kg(${{ github.event.inputs.domain || 'HBM_SALVAGE' }}): auto-build ${{ github.event.inputs.version_tag || '2026-W18' }} [skip ci]"
+          git push
+
+      - name: Notify Slack (optional)
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+              --data '{"text":"KG Build ${{ job.status }}: ${{ github.event.inputs.domain }} ${{ github.event.inputs.version_tag }}"}' \
+              $SLACK_WEBHOOK
+          fi

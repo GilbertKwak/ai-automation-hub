@@ -1,0 +1,4 @@
+# HBM_SALVAGE Knowledge Graph Output Directory
+# G-006 G-KG_v1.0.md — kg-build.yml 자동 생성 경로
+# 첫 실행: gh workflow run kg-build.yml -f domain=HBM_SALVAGE -f version_tag=2026-W18
+# 예상 출력: kg/HBM_SALVAGE/2026-W18.md
